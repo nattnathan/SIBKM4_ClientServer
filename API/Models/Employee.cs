@@ -22,6 +22,9 @@ public class Employee
     public string Email { get; set; }
     [Column("phone_number", TypeName = "varchar(50)")]
     public string PhoneNumber { get; set; }
+
+    // Cardinality
+    public Profiling Profiling { get; set; }
 }
 
 public enum Gender
