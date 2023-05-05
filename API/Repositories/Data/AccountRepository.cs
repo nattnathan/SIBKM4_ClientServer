@@ -1,4 +1,5 @@
 ﻿using API.Context;
+using API.Handlers;
 using API.Models;
 using API.Repositories.Interface;
 using API.ViewModels;
@@ -52,7 +53,7 @@ public class AccountRepository : GeneralRepository<Account, string, MyContext>, 
         // Insert to Account Table
         var account = new Account {
             EmployeeNIK = registerVM.NIK,
-            Password = registerVM.Password,
+            Password = Hashing.HashPassword(registerVM.Password),
         };
         _context.Set<Account>().Add(account);
         result += _context.SaveChanges();
@@ -78,18 +79,20 @@ public class AccountRepository : GeneralRepository<Account, string, MyContext>, 
 
     public bool Login(LoginVM loginVM)
     {
-        // Ambil data dari database berdasarkan Email di tabel employee
-        var employeeByEmail = _context.Employees.FirstOrDefault(e => e.Email == loginVM.Email);
-        if (employeeByEmail == null) {
+        var getEmployeeAccount = _context.Employees.Join(_context.Accounts,
+                                                         e => e.NIK,
+                                                         a => a.EmployeeNIK,
+                                                         (e, a) => new {
+                                                             Email = e.Email,
+                                                             Password = a.Password
+                                                         }).FirstOrDefault(e =>
+                                                                               e.Email == loginVM.Email);
+
+        if (getEmployeeAccount == null) {
             return false;
         }
 
-        // Gabungkan data dari tabel employee dengan tabel account berdasarkan NIK
-        var accountByNIK = _context.Accounts.FirstOrDefault(a => a.EmployeeNIK == employeeByEmail.NIK);
-
-        // Cocokan data tersebut dengan Password yang diinputkan
-        // Cek Apakah data valid atau tidak
-        return accountByNIK != null && loginVM.Password == accountByNIK.Password;
+        return Hashing.ValidatePassword(loginVM.Password, getEmployeeAccount.Password);
     }
 }
 
