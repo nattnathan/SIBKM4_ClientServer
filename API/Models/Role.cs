@@ -4,17 +4,17 @@ using System.Text.Json.Serialization;
 
 namespace API.Models
 {
-    [Table("tb_m_universities")]
-    public class University
+    [Table("tb_m_roles")]
+    public class Role
     {
         [Key, Column("id")]
         public int Id { get; set; }
 
-        [Column("name", TypeName = "varchar(100)")]
+        [Column("name", TypeName = "varchar(50)")]
         public string Name { get; set; }
 
-        //Cardinality
+        //cardinality
         [JsonIgnore]
-        public ICollection<Education>? Educations { get; set; }
+        public ICollection<AccountRole>? AccountRoles { get; set; }
     }
 }
