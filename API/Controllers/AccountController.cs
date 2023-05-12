@@ -12,6 +12,7 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(Roles = "admin")]
+//[EnableCors("AnotherPolicy")]
 public class AccountController : GeneralController<IAccountRepository, Account, string>
 {
     private readonly ITokenService _tokenService;
