@@ -7,7 +7,7 @@ using System.Net;
 namespace API.Base;
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class GeneralController<TRepository, TEntity, TKey> : ControllerBase
     where TRepository : IGeneralRepository<TEntity, TKey>
 {

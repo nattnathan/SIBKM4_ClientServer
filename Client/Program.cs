@@ -1,7 +1,11 @@
+using Client.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<UniversityRepository>(); //kalau belum dipasang pasti akan (unable to resolve service)
 
 var app = builder.Build();
 
