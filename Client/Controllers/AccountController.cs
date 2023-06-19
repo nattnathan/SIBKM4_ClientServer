@@ -31,11 +31,11 @@ public class AccountController : Controller
         return View();
     }
 
-    [HttpGet("/Account/Logout")]
-    public async Task<IActionResult> Logout()
+    [HttpGet("/Logout")]
+    public IActionResult Logout()
     {
         HttpContext.Session.Clear();
-        return RedirectToAction("login");
+        return Redirect("/Account/Login");
     }
 
     public async Task<IActionResult> Index()

@@ -19,6 +19,13 @@ public class HomeController : Controller
         return View();
     }
 
+    [AllowAnonymous]
+    [HttpGet("/Unauthorized")]
+    public IActionResult Unauthorized()
+    {
+        return View("401");
+    }
+
     public IActionResult Privacy()
     {
         return View();

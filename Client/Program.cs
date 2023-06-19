@@ -1,6 +1,7 @@
 using Client.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Net;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,11 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
-
 builder.Services.AddScoped<UniversityRepository>(); //kalau belum dipasang pasti akan (unable to resolve service)
 builder.Services.AddScoped<AccountRepository>();
 
-// Configure JWT Authentication -> di ambil dari program.cs API sendiri
+// Configure JWT Authentication -> ini diambil dari JWT configuration Program.CS API sendiri
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
        .AddJwtBearer(options => {
            options.RequireHttpsMetadata = false;
@@ -30,8 +30,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                ClockSkew = TimeSpan.Zero
            };
        });
-//======================================================
-
 
 var app = builder.Build();
 
@@ -46,6 +44,17 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Custom Error page
+app.UseStatusCodePages(async context => {
+    var response = context.HttpContext.Response;
+
+    if (response.StatusCode.Equals((int)HttpStatusCode.Unauthorized))
+    {
+        response.Redirect("/unauthorized");
+    }
+});
+
 app.UseSession();
 
 //Add JWToken to all incoming HTTP Request Header
@@ -62,11 +71,10 @@ app.Use(async (context, next) =>
 });
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=login}/{id?}");
+    pattern: "{controller=Home}/{action=index}/{id?}");
 
 app.Run();
