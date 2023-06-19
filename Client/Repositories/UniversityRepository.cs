@@ -8,13 +8,11 @@ namespace Client.Repositories
     public class UniversityRepository
     {
         private readonly string request;
-        private readonly HttpContextAccessor contextAccessor;
         private readonly HttpClient httpClient;
 
         public UniversityRepository(string request = "University/")
         {
             this.request = request;
-            contextAccessor = new HttpContextAccessor();
             httpClient = new HttpClient
             {
                 BaseAddress = new Uri("https://localhost:7214/api/")
